@@ -2,6 +2,7 @@ import mysql.connector
 from  dotenv  import  dotenv_values
 
 
+creating_table_query =[]
 config  =  dotenv_values ( ".env" ) 
 create_db_query = f"CREATE DATABASE {config['DATABASE']}"
 
@@ -20,7 +21,7 @@ connection = mysql.connector.connect(
     database = config['DATABASE']
 )
 
-create_products_table = """
+creating_table_query.append("""
 CREATE TABLE products
 (
   id INT PRIMARY KEY AUTO_INCREMENT,
@@ -30,9 +31,9 @@ CREATE TABLE products
   code VARCHAR (255),
   category_id INT
 )
-"""
+""")
 
-create_categories_table = """
+creating_table_query.append("""
 CREATE TABLE categories
 (
   id INT PRIMARY KEY AUTO_INCREMENT,
@@ -40,12 +41,8 @@ CREATE TABLE categories
   code VARCHAR (255)
   
 )
-"""
-
-with connection.cursor() as cursor:
-    cursor.execute(create_products_table)
-    connection.commit()
-
-with connection.cursor() as cursor:
-    cursor.execute(create_categories_table)
-    connection.commit()
+""")
+for query in creating_table_query:
+    with connection.cursor() as cursor:
+        cursor.execute(query)
+        connection.commit()
